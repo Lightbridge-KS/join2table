@@ -1,0 +1,93 @@
+---
+title: "Problems in joining student score"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(lbr)
+```
+
+```{r read}
+ls_all <- lbr::rd(read_csv)
+
+ids <- ls_all[["id_wrong"]]
+elect <- ls_all[["logs_Electrical"]] %>% set_names(snakecase::to_snake_case)
+```
+
+```{r}
+elect
+```
+
+### Rows in ids where no match in elect
+
+Student who don't do SELECx or wrong names
+```{r}
+anti_join(ids, elect, by = c("Name" = "user_full_name"))
+```
+### Rows in elect where no match in ids 
+
+In SELECx but not in ids (can be wrong names)
+```{r}
+anti_join(elect, ids, by = c("user_full_name" ="Name")) %>% 
+  distinct(across(user_full_name))
+```
+### Rows in ids where match in elect
+```{r}
+semi_join(ids, elect, by = c("Name" = "user_full_name"))
+```
+
+```{r}
+elect_nm <- elect %>% select(user_full_name)
+```
+
+
+```{r}
+ids_lj_elect <- left_join(ids, elect, by = c("Name" = "user_full_name")) %>% 
+  distinct(across(No:Name), .keep_all = T)
+
+ids_lj_elect
+```
+
+```{r}
+ids_fj_elect <- full_join(ids, elect, by = c("Name" = "user_full_name")) %>% 
+  distinct(across(No:Name), .keep_all = T)
+
+ids_fj_elect
+```
+
+### full_join better than left_join
+
+These names found in SELECx but not in ids (may be wrong names)
+
+```{r}
+anti_join(ids_fj_elect, ids_lj_elect, by = "Name")
+```
+
+
+```{r}
+band_members %>% write_csv("band_memb.csv")
+```
+
+```{r}
+band_instruments %>% write_csv("band_instru.csv")
+```
+
+
+```{r}
+band_members %>% inner_join(band_instruments2, by = c(name = "artist"))
+band_members %>% inner_join(band_instruments2, c("name" = "artist"))
+```
+```{r}
+band_members %>% inner_join(band_instruments, by = c(v))
+
+```
+
+
+
+```{r}
+v <- c("artist")
+names(v) <- "name"
+v
+```
+
