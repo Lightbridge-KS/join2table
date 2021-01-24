@@ -6,6 +6,8 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
+[`https://lightbridge-ai.shinyapps.io/join2table/`](https://lightbridge-ai.shinyapps.io/join2table/)
+
 This shiny app implement R-package: `dplyr::*_join()` function into
 web-application.
 
