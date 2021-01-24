@@ -1,0 +1,12 @@
+name: join2table
+title: join2table
+username:
+account: lightbridge-ai
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3513404
+bundleId: 4136013
+url: https://lightbridge-ai.shinyapps.io/join2table/
+when: 1611488067.99332
+asMultiple: FALSE
+asStatic: FALSE

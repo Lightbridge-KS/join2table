@@ -1,6 +1,7 @@
 #### Join table
 
 library(shiny)
+#library(shinythemes)
 library(dplyr)
 library(purrr)
 library(stringr)
@@ -48,8 +49,9 @@ remove_dup <- function(df, type = "distinct" ,vars ,all_vars = F,  ...) {
 
 
 ui <- fluidPage(
-  
+  #theme = shinythemes::shinytheme("sandstone"),
   titlePanel("Join 2 tables"),
+  tags$a(href="https://github.com/Lightbridge-AI/join2table", "Source Code"),
   hr(),
   
 
@@ -101,15 +103,38 @@ ui <- fluidPage(
   
   fluidRow(
     column(6, 
-           helpText("Step 3 : Choose joining method...  ",
-                    tags$a(href="https://dplyr.tidyverse.org/reference/join.html#grouping", "See Code")),
+           helpText(h4("Step 3 : Choose joining method"),
+                    tags$a(href="https://dplyr.tidyverse.org/reference/join.html#grouping", "See Code"), "or",
+                    tags$a(href="https://r4ds.had.co.nz/relational-data.html#relational-data", "Learn Theory !")),
+                    
            selectInput("join_fun", "Joining method:", choices = list("semi_join" = "semi_join",
                                                                      "anti_join" = "anti_join",
                                                                      "inner_join"= "inner_join",
                                                                      "left_join" = "left_join", 
                                                                      "right_join"= "right_join",
-                                                                     "full_join" = "full_join"))
-    ),
+                                                                     "full_join" = "full_join")),
+    
+           tabsetPanel(
+             id = "tab_inform",
+             type = "hidden",
+             
+             tabPanel("semi_join",
+                     helpText("Return all rows from table X where there are matching values in table Y, keeping just columns from table X.")),
+             
+             tabPanel("anti_join",
+                      helpText("Return all rows from table X where there are", strong("not") ,"matching values in table Y, keeping just columns from table X.")),
+             tabPanel("inner_join",
+                      helpText("Return all rows from table X where there are matching values in table Y, and all columns from X and Y. If there are multiple matches between X and Y, all combination of the matches are returned.")
+                      ),
+             tabPanel("left_join",
+                      helpText("Return all rows from table X, and all columns from X and Y. Rows in X with no match in Y will have NA values (blank) in the new columns. If there are multiple matches between X and Y, all combinations of the matches are returned.")),
+             tabPanel("right_join",
+                      helpText("Return all rows from table Y, and all columns from X and Y. Rows in Y with no match in X will have NA values (blank) in the new columns. If there are multiple matches between X and Y, all combinations of the matches are returned.")),
+             tabPanel("full_join",
+                      helpText("Return all rows and all columns from both x and y. Where there are not matching values, returns NA (blank) for the one missing."))
+           )
+           
+           ),
     column(6,
            checkboxInput("check_rm_dup","Remove duplicate rows ?",value = F),
            tabsetPanel(
@@ -130,7 +155,7 @@ ui <- fluidPage(
 
   # Tabset ------------------------------------------------------------------
 
-  
+  br(),
   tabsetPanel(
     tabPanel("Joined",
              br(),
@@ -156,7 +181,14 @@ ui <- fluidPage(
              dataTableOutput("table_y")
     ),
     tabPanel("Guide : Joining method",
-             img(src='joining_method.png', align = "left", height = 900 ,width = 1199)
+          
+             img(src='joining_method.png', align = "left", height = 900 ,width = 1199),
+             tags$a(href="https://github.com/Lightbridge-AI/join2table/blob/main/www/joining_method.png", 
+                    "Download picture"),
+             br(),
+             tags$a(href="https://github.com/rstudio/cheatsheets/blob/master/data-transformation.pdf", 
+                    "dplyr::cheatsheets")
+             
              
     )
     
@@ -275,6 +307,11 @@ server <- function(input, output, session) {
   
   # Join table --------------------------------------------------------------
   
+  observeEvent(input$join_fun,{
+    updateTabsetPanel(session, "tab_inform", selected = input$join_fun)
+    
+  })
+  
   
   joined_df <- reactive({
     
@@ -361,11 +398,10 @@ server <- function(input, output, session) {
   
   
   
-  output$raw <- renderPrint({ list( ls() ) })
-  output$raw_2 <- renderPrint({  names(joined_df())})
-  output$raw_3 <- renderPrint({  isTruthy( names(joined_df() ) )})
-  
-  
+  # output$raw <- renderPrint({ list( ls() ) })
+  # output$raw_2 <- renderPrint({  names(joined_df())})
+  # output$raw_3 <- renderPrint({  isTruthy( names(joined_df() ) )})
+
   
   # Download ---------------------------------------------------------------
   
