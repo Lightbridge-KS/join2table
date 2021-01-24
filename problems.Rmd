@@ -79,8 +79,10 @@ band_members %>% inner_join(band_instruments2, by = c(name = "artist"))
 band_members %>% inner_join(band_instruments2, c("name" = "artist"))
 ```
 ```{r}
-band_members %>% inner_join(band_instruments, by = c(v))
+band_members 
 
+band_instruments
+band_instruments2 %>% write_csv("band_instru2.csv")
 ```
 
 

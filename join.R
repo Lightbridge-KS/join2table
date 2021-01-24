@@ -87,7 +87,11 @@ ui <- fluidPage(
                  ),
         tabPanel("Table Y",
                  dataTableOutput("table_y")
-                 )
+                 ),
+        tabPanel("Guide : Joining method",
+                 img(src='joining_method.png', align = "left", height = 900 ,width = 1199)
+          
+        )
         
         
       )
@@ -156,6 +160,9 @@ server <- function(input, output, session) {
   })
   
   output$table_y <- renderDataTable({ df_y() })
+  
+
+# Swab --------------------------------------------------------------------
   
 
 # Join table --------------------------------------------------------------
